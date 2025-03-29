@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Vegas Casino - Games</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Rye&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Additional styles to ensure game buttons work and look good */
+        .game-selection {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .game-btn {
+            background-color: #e5b80b;
+            color: #1a1a1a;
+            border: 2px solid #d4af37;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            min-width: 100px;
+            text-align: center;
+        }
+        
+        .game-btn:hover {
+            background-color: #e63946;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .game-btn.active {
+            background-color: #e63946;
+            color: white;
+            border-color: #e63946;
+            box-shadow: 0 0 15px rgba(230, 57, 70, 0.5);
+        }
+        
+        .game-btn i {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="vegas-sign">
+    </div>
+
+    <div class="container">
+        <h1><i class="fas fa-crown"></i> New Vegas Casino <i class="fas fa-crown"></i></h1>
+        
+        <div id="game-nav">
+            <button class="game-btn active" data-game="slots">
+                <i class="fas fa-dice"></i> Slots
+            </button>
+            <button class="game-btn" data-game="poker">
+                <i class="fas fa-heart"></i> Poker
+            </button>
+            <button class="game-btn" data-game="dice-roll">
+                <i class="fas fa-dice-d20"></i> Dice Roll
+            </button>
+            <button class="game-btn" data-game="horse-racing">
+                <i class="fas fa-horse-head"></i> Horse Racing
+            </button>
+            <button class="game-btn" data-game="arcade">
+                <i class="fas fa-dharmachakra"></i> Arcade
+            </button>
+        </div>
+        
+        <!-- Slots Game -->
+        <div class="game-container" id="slots-game">
+            <div class="slot-machine">
+                <div class="machine-top">
+                    <div class="jackpot-display">
+                        <div class="jackpot-light"></div>
+                        <h3>MEGA JACKPOT</h3>
+                        <p>$<span id="jackpot">50,000</span></p>
+                        <div class="jackpot-light"></div>
+                    </div>
+                </div>
+
+                <div class="reels-container">
+                    <div class="reel-cabinet">
+                        <div class="lever-container">
+                            <div class="lever-base"></div>
+                            <div class="lever" id="lever"></div>
+                        </div>
+                        <div class="reels">
+                            <div class="reel" id="reel1">
+                                <div class="symbol" id="symbol1"></div>
+                            </div>
+                            <div class="reel" id="reel2">
+                                <div class="symbol" id="symbol2"></div>
+                            </div>
+                            <div class="reel" id="reel3">
+                                <div class="symbol" id="symbol3"></div>
+                            </div>
+                        </div>
+                        <div class="win-line"></div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <div class="credits-display">
+                        <i class="fas fa-dollar-sign"></i>
+                        <p>Credits: <span class="credits-amount">1000</span></p>
+                    </div>
+                    <div class="bet-controls">
+                        <div class="bet-input-group">
+                            <label for="bet-input">Bet Amount:</label>
+                            <div class="bet-input-wrapper">
+                                <span class="bet-currency">$</span>
+                                <input type="number" id="bet-input" min="5" step="5" value="10">
+                            </div>
+                        </div>
+                    </div>
+                    <button id="spin-button" class="spin-button">
+                        <span>SPIN</span>
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                
+                <div class="message" id="message"></div>
+            </div>
+            
+            <button class="sound-button">
+                <i class="fas fa-volume-up"></i>
+            </button>
+
+            <div class="payout-table">
+                <h2><i class="fas fa-trophy"></i> Payout Table</h2>
+                <ul>
+                    <li>🎩🎩🎩 = 50x bet</li>
+                    <li>🥃🥃🥃 = 40x bet</li>
+                    <li>🎲🎲🎲 = 30x bet</li>
+                    <li>🃏🃏🃏 = 20x bet</li>
+                    <li>🎭🎭🎭 = 15x bet</li>
+                    <li>💎💎💎 = 100x bet</li>
+                    <li>🏆🏆🏆 = 200x bet</li>
+                    <li>Any combination with two matching = 2x bet</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Poker Game -->
+        <div id="poker-game" class="game-container" style="display: none;">
+            <div class="game-board">
+                <div class="player-area">
+                    <div class="credits-display">
+                        Credits: <span class="credits-amount">1000</span>
+                    </div>
+                    <div class="bet-controls">
+                        <button class="bet-down">-</button>
+                        <div class="bet-input-group">
+                            <label>Bet Amount</label>
+                            <div class="bet-input-wrapper">
+                                <span class="bet-currency">$</span>
+                                <input type="number" class="bet-input" value="10" min="5" step="5">
+                            </div>
+                        </div>
+                        <button class="bet-up">+</button>
+                    </div>
+                    <div class="player-cards">
+                        <div class="card card-back"></div>
+                        <div class="card card-back"></div>
+                        <div class="card card-back"></div>
+                        <div class="card card-back"></div>
+                        <div class="card card-back"></div>
+                    </div>
+                    <div class="poker-controls">
+                        <button class="action-btn">Deal</button>
+                        <button class="action-btn">Hold</button>
+                        <button class="action-btn">Draw</button>
+                    </div>
+                    <div class="poker-message">Place your bet and click Deal to start!</div>
+                    
+                    <div class="payout-table poker-payout">
+                        <h2><i class="fas fa-trophy"></i> Poker Payouts</h2>
+                        <ul>
+                            <li>Royal Flush = 800x bet</li>
+                            <li>Straight Flush = 200x bet</li>
+                            <li>Four of a Kind = 100x bet</li>
+                            <li>Full House = 50x bet</li>
+                            <li>Flush = 30x bet</li>
+                            <li>Straight = 25x bet</li>
+                            <li>Three of a Kind = 15x bet</li>
+                            <li>Two Pair = 10x bet</li>
+                            <li>Jacks or Better = 5x bet</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dice Roll Game -->
+        <div id="dice-roll-game" class="game-container" style="display: none;">
+            <div class="game-board dice-roll-board">
+                <div class="dice-area">
+                    <div class="dice-container">
+                        <div class="dice" id="dice1">
+                            <div class="dice-face front">⚀</div>
+                            <div class="dice-face back">⚁</div>
+                            <div class="dice-face right">⚂</div>
+                            <div class="dice-face left">⚃</div>
+                            <div class="dice-face top">⚄</div>
+                            <div class="dice-face bottom">⚅</div>
+                        </div>
+                        <div class="dice" id="dice2">
+                            <div class="dice-face front">⚀</div>
+                            <div class="dice-face back">⚁</div>
+                            <div class="dice-face right">⚂</div>
+                            <div class="dice-face left">⚃</div>
+                            <div class="dice-face top">⚄</div>
+                            <div class="dice-face bottom">⚅</div>
+                        </div>
+                    </div>
+                    <div class="dice-sum">Sum: <span id="dice-sum">-</span></div>
+                </div>
+                
+                <div class="controls">
+                    <div class="credits-display">
+                        Credits: <span class="credits-amount">1000</span>
+                    </div>
+                    
+                    <div class="bet-controls">
+                        <button class="bet-down">-</button>
+                        <div class="bet-input-group">
+                            <label>Bet Amount</label>
+                            <div class="bet-input-wrapper">
+                                <span class="bet-currency">$</span>
+                                <input type="number" class="bet-input" value="10" min="5" step="5">
+                            </div>
+                        </div>
+                        <button class="bet-up">+</button>
+                    </div>
+                    
+                    <div class="dice-buttons">
+                        <button class="action-btn" id="high-button">
+                            <i class="fas fa-arrow-up"></i>
+                            High (8-12)
+                        </button>
+                        <button class="action-btn" id="low-button">
+                            <i class="fas fa-arrow-down"></i>
+                            Low (2-6)
+                        </button>
+                        <button class="action-btn" id="seven-button">
+                            <i class="fas fa-dice-d20"></i>
+                            Seven (7)
+                        </button>
+                    </div>
+                    
+                    <button id="roll-button" class="action-btn">
+                        <i class="fas fa-dice"></i>
+                        Roll Dice
+                    </button>
+                    
+                    <div class="dice-message">Place your bet and click Roll to start!</div>
+                </div>
+                
+                <div class="payout-table">
+                    <h2><i class="fas fa-trophy"></i> Dice Roll Payouts</h2>
+                    <ul>
+                        <li>High (8-12): 1:1</li>
+                        <li>Low (2-6): 1:1</li>
+                        <li>Seven (7): 4:1</li>
+                        <li>Exact Sum: 5:1</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Horse Racing Game -->
+        <div id="horse-racing-game" class="game-container" style="display: none;">
+            <h2>Horse Racing</h2>
+            <div id="race-track">
+                <div class="horse-selection">
+                    <h3>Select Your Horse</h3>
+                    <div class="credits-display">
+                        Credits: <span class="credits-amount">1000</span>
+                    </div>
+                    <div class="bet-controls">
+                        <label for="horse-bet-input">Bet Amount: $</label>
+                        <input type="number" id="horse-bet-input" min="5" step="5" value="10">
+                    </div>
+                    <div class="horse-options">
+                        <div class="horse-option" data-horse="1">
+                            <span class="horse-icon">🐎</span>
+                            <span class="horse-name">Thunder</span>
+                            <span class="odds">6:1</span>
+                        </div>
+                        <div class="horse-option" data-horse="2">
+                            <span class="horse-icon">🐎</span>
+                            <span class="horse-name">Lightning</span>
+                            <span class="odds">8:1</span>
+                        </div>
+                        <div class="horse-option" data-horse="3">
+                            <span class="horse-icon">🐎</span>
+                            <span class="horse-name">Rocket</span>
+                            <span class="odds">5:1</span>
+                        </div>
+                        <div class="horse-option" data-horse="4">
+                            <span class="horse-icon">🐎</span>
+                            <span class="horse-name">Blizzard</span>
+                            <span class="odds">10:1</span>
+                        </div>
+                        <div class="horse-option" data-horse="5">
+                            <span class="horse-icon">🐎</span>
+                            <span class="horse-name">Hurricane</span>
+                            <span class="odds">12:1</span>
+                        </div>
+                    </div>
+                    <button id="start-race-btn" class="game-btn">Start Race</button>
+                </div>
+                <div id="race-track-lanes">
+                    <div class="race-lane" id="lane-1">
+                        <div class="lane-indicator">1. Thunder</div>
+                        <div class="horse">🐎</div>
+                        <div class="finish-line"></div>
+                    </div>
+                    <div class="race-lane" id="lane-2">
+                        <div class="lane-indicator">2. Lightning</div>
+                        <div class="horse">🐎</div>
+                        <div class="finish-line"></div>
+                    </div>
+                    <div class="race-lane" id="lane-3">
+                        <div class="lane-indicator">3. Rocket</div>
+                        <div class="horse">🐎</div>
+                        <div class="finish-line"></div>
+                    </div>
+                    <div class="race-lane" id="lane-4">
+                        <div class="lane-indicator">4. Blizzard</div>
+                        <div class="horse">🐎</div>
+                        <div class="finish-line"></div>
+                    </div>
+                    <div class="race-lane" id="lane-5">
+                        <div class="lane-indicator">5. Hurricane</div>
+                        <div class="horse">🐎</div>
+                        <div class="finish-line"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Arcade Jackpot Game -->
+        <div id="arcade-game" class="game-container" style="display: none;">
+            <h2>Lucky Reels</h2>
+            <div class="arcade-game">
+                <div class="arcade-game-info">
+                    <h3>Test Your Luck!</h3>
+                    <p>Place your bet and spin the reel to win credits. Land on the right symbol to win big!</p>
+                </div>
+                
+                <!-- Simple slot machine structure -->
+                <div class="slot-machine">
+                    <div id="arcade-display" class="reel-display"></div>
+                    
+                    <div class="machine-controls">
+                        <div class="credits-display">
+                            Credits: <span class="credits-amount">1000</span>
+                        </div>
+                        
+                        <div class="bet-controls">
+                            <button class="bet-btn bet-down">-</button>
+                            <span class="current-bet">10</span>
+                            <button class="bet-btn bet-up">+</button>
+                        </div>
+                        
+                        <button id="arcade-spin-btn" class="spin-button">SPIN</button>
+                    </div>
+                </div>
+                
+                <div id="arcade-result" class="arcade-result"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio elements -->
+    <script>
+        // Web Audio API sound effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create audio context
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            const audioCtx = new AudioContext();
+            
+            // Sound effect functions
+            const sounds = {
+                // Click sound - short beep
+                click: function() {
+                    const oscillator = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    
+                    oscillator.type = 'sine';
+                    oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
+                    
+                    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    
+                    oscillator.start();
+                    oscillator.stop(audioCtx.currentTime + 0.1);
+                },
+                
+                // Spin sound - accelerating beeps
+                spin: function() {
+                    const oscillator = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    
+                    oscillator.type = 'square';
+                    oscillator.frequency.setValueAtTime(300, audioCtx.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.5);
+                    
+                    gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    
+                    oscillator.start();
+                    oscillator.stop(audioCtx.currentTime + 0.5);
+                },
+                
+                // Win sound - ascending notes
+                win: function() {
+                    let time = audioCtx.currentTime;
+                    const frequencies = [440, 554, 659, 880, 1108];
+                    
+                    frequencies.forEach((freq, i) => {
+                        const oscillator = audioCtx.createOscillator();
+                        const gainNode = audioCtx.createGain();
+                        
+                        oscillator.type = 'sine';
+                        oscillator.frequency.value = freq;
+                        
+                        gainNode.gain.setValueAtTime(0, time + i * 0.1);
+                        gainNode.gain.linearRampToValueAtTime(0.3, time + i * 0.1 + 0.05);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, time + i * 0.1 + 0.3);
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioCtx.destination);
+                        
+                        oscillator.start(time + i * 0.1);
+                        oscillator.stop(time + i * 0.1 + 0.3);
+                    });
+                },
+                
+                // Big win sound - triumphant chord
+                bigWin: function() {
+                    let time = audioCtx.currentTime;
+                    const frequencies = [261.63, 329.63, 392, 523.25];
+                    
+                    frequencies.forEach((freq, i) => {
+                        const oscillator = audioCtx.createOscillator();
+                        const gainNode = audioCtx.createGain();
+                        
+                        oscillator.type = 'sine';
+                        oscillator.frequency.value = freq;
+                        
+                        gainNode.gain.setValueAtTime(0, time);
+                        gainNode.gain.linearRampToValueAtTime(0.2, time + 0.1);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, time + 1.5);
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioCtx.destination);
+                        
+                        oscillator.start(time);
+                        oscillator.stop(time + 1.5);
+                    });
+                },
+                
+                // Reel stop sound - single tap
+                reelStop: function() {
+                    const oscillator = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    
+                    oscillator.type = 'square';
+                    oscillator.frequency.setValueAtTime(200, audioCtx.currentTime);
+                    
+                    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    
+                    oscillator.start();
+                    oscillator.stop(audioCtx.currentTime + 0.1);
+                },
+                
+                // Lever pull sound - sliding down noise
+                leverPull: function() {
+                    const oscillator = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    
+                    oscillator.type = 'sawtooth';
+                    oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+                    
+                    gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    
+                    oscillator.start();
+                    oscillator.stop(audioCtx.currentTime + 0.3);
+                },
+                
+                // Card flip sound - short tap
+                cardFlip: function() {
+                    const oscillator = audioCtx.createOscillator();
+                    const gainNode = audioCtx.createGain();
+                    
+                    oscillator.type = 'triangle';
+                    oscillator.frequency.setValueAtTime(500, audioCtx.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.1);
+                    
+                    gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                    
+                    oscillator.start();
+                    oscillator.stop(audioCtx.currentTime + 0.1);
+                },
+                
+                // Chip stack sound - clinking
+                chipStack: function() {
+                    let time = audioCtx.currentTime;
+                    
+                    for (let i = 0; i < 3; i++) {
+                        const oscillator = audioCtx.createOscillator();
+                        const gainNode = audioCtx.createGain();
+                        
+                        oscillator.type = 'sine';
+                        oscillator.frequency.setValueAtTime(800 + Math.random() * 500, time + i * 0.08);
+                        
+                        gainNode.gain.setValueAtTime(0.2, time + i * 0.08);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, time + i * 0.08 + 0.1);
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioCtx.destination);
+                        
+                        oscillator.start(time + i * 0.08);
+                        oscillator.stop(time + i * 0.08 + 0.1);
+                    }
+                },
+                
+                // Roulette spin sound - ball bouncing
+                rouletteSpin: function() {
+                    let time = audioCtx.currentTime;
+                    
+                    for (let i = 0; i < 10; i++) {
+                        const oscillator = audioCtx.createOscillator();
+                        const gainNode = audioCtx.createGain();
+                        
+                        oscillator.type = 'sine';
+                        oscillator.frequency.setValueAtTime(600 + Math.random() * 400, time + i * 0.2);
+                        
+                        gainNode.gain.setValueAtTime(0.1, time + i * 0.2);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, time + i * 0.2 + 0.1);
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioCtx.destination);
+                        
+                        oscillator.start(time + i * 0.2);
+                        oscillator.stop(time + i * 0.2 + 0.1);
+                    }
+                },
+                
+                // Horse gallop sound - repetitive beats
+                horseGallop: function() {
+                    let time = audioCtx.currentTime;
+                    
+                    for (let i = 0; i < 8; i++) {
+                        const oscillator = audioCtx.createOscillator();
+                        const gainNode = audioCtx.createGain();
+                        
+                        oscillator.type = 'triangle';
+                        oscillator.frequency.setValueAtTime(100, time + i * 0.15);
+                        
+                        gainNode.gain.setValueAtTime(0.3, time + i * 0.15);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, time + i * 0.15 + 0.1);
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioCtx.destination);
+                        
+                        oscillator.start(time + i * 0.15);
+                        oscillator.stop(time + i * 0.15 + 0.1);
+                    }
+                }
+            };
+            
+            // Expose sounds to window
+            window.playSFX = sounds;
+            
+            // Initialize click sound for buttons
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    sounds.click();
+                });
+            });
+        });
+    </script>
+
+    <script src="js/shared.js"></script>
+    <script src="js/slots.js"></script>
+    <script src="js/poker.js"></script>
+    <script src="js/dice-roll.js"></script>
+    <script src="js/horse-racing.js"></script>
+    <script src="js/arcade.js"></script>
+    <script src="js/main.js"></script>
+    <footer class="copyright">
+        <div class="copyright-content">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Sons_of_Confederate_Veterans_logo.svg/1024px-Sons_of_Confederate_Veterans_logo.svg.png" alt="SCV Logo" class="scv-logo">
+            <p>&copy; Sons of Confederate Veterans 1896-2025</p>
+        </div>
+    </footer>
+</body>
+</html> 
